@@ -7,7 +7,6 @@ import java.util.HashMap;
 public class BinaryTreeInorderPostOrder {
 
     private HashMap<Integer,Integer> inorderMap = new HashMap<>();
-    private HashMap<Integer,Integer> postorderMap = new HashMap<>();
 
     public TreeNode buildTree(int[] inorder, int[] postorder) {
 
@@ -18,9 +17,6 @@ public class BinaryTreeInorderPostOrder {
             inorderMap.put(inorder[i],i);
         }
 
-        for(int i = 0; i < in_len ; i++) {
-            postorderMap.put(postorder[i],i);
-        }
 
         return _buildTree( inorder, 0, in_len -1, postorder, 0, post_len -1  );
 
@@ -41,16 +37,19 @@ public class BinaryTreeInorderPostOrder {
 
         // post_end is root
         int in_lindex = inorderMap.get(postorder[post_end]); // index of root in inorder
-        int post_lindex = in_lindex > 0 ? postorderMap.get(inorder[in_lindex-1]): post_end -1 ;
+        int l_count = in_lindex - in_start  ;
+        int post_lindex = post_start + l_count - 1; // start + count
 
-        if (in_lindex > in_start) {
+        if (l_count > 0) {
             n.left = _buildTree(inorder, in_start, in_lindex - 1, postorder, post_start, post_lindex);
         } else {
             n.left = null ;
         }
 
-        if (in_lindex < in_end ) {
-            n.right = _buildTree(inorder, in_lindex + 1, in_end, postorder, post_lindex + 1, post_end - 1);
+        int r_count = in_end - in_lindex;
+        if (r_count > 0 ) {
+            n.right = _buildTree(inorder, in_lindex + 1, in_end,
+                    postorder, post_lindex + 1, post_end - 1);
         } else {
             n.right = null;
         }

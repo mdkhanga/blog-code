@@ -44,4 +44,16 @@ class BinaryTreeInorderPostOrderTest {
 
     }
 
+    @Test
+    public void test4() {
+
+        int[] inorder = {2,3,1} ;
+        int[] postorder = {3,2,1};
+
+        BinaryTreeInorderPostOrder.TreeNode ret = bst.buildTree(inorder, postorder);
+
+        System.out.println(ret.val);
+
+    }
+
 }
