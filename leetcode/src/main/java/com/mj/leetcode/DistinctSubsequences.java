@@ -21,6 +21,8 @@ public class DistinctSubsequences {
 
     public void _numDistinct(String s, int sIndex,  String t, int tIndex) {
 
+        if (s.charAt(sIndex) == t.charAt(tIndex))
+
         if (tIndex == tLen) {
             dp[sIndex-1][tIndex-1] = 1;
             return ;
