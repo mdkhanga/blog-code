@@ -43,4 +43,11 @@ class BestTimeToBuySellStock3Test {
         assertEquals(4,profit);
     }
 
+    @Test
+    public void test6() {
+        int[] prices = {3,1,4};
+        int profit = b.maxProfit(prices);
+        assertEquals(3,profit);
+    }
+
 }

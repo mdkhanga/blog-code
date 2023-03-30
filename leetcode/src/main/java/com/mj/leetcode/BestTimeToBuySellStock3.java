@@ -5,32 +5,65 @@ public class BestTimeToBuySellStock3 {
 
     public int maxProfit(int[] prices) {
 
-        int dp[][] = new int[prices.length][1]; // i = profit at prices[i], numTrades
-        return tradeOrNot(0, false,0,prices,0,0) ;
-    }
+        int dp[][][] = new int[prices.length][3][2]; // i = max profit at i, with j trades allowed 0,1,2,0=canSell 1=cannot
 
-    public int tradeOrNot(int currentHold, boolean canSell, int index, int[] prices, int maxProfit, int numTrades) {
-
-        if (index >= prices.length || numTrades >= 2) {
-            return maxProfit;
+        for (int i = 0 ; i < prices.length; i++) {
+            for (int j =0 ; j < 3 ; j++) {
+                for (int k = 0 ; k < 2 ; k++) {
+                    dp[i][j][k] = -1;
+                }
+            }
         }
 
-        if (currentHold <= 0 && !canSell) {
+        tradeOrNot(0, 1,0,prices,0,0,dp);
+
+
+        return dp[0][0][1];
+    }
+
+    public int  tradeOrNot(int currentHold, int canSell, int index, int[] prices, int maxProfit, int numTrades, int[][][] dp) {
+
+        if (index >= prices.length) {
+            return 0 ;
+        }
+
+        if (numTrades == 2) {
+            return 0 ;
+        }
+
+        if (dp[index][numTrades][canSell] != -1) {
+            return dp[index][numTrades][canSell] ;
+        }
+
+
+        if  (canSell == 1) {
             // we can buy or choose not do anything
             // buy
-            int profit1 = tradeOrNot(prices[index], true,index+1, prices, maxProfit, numTrades) ;
-            int profit2 = tradeOrNot(currentHold, false,index+1, prices, maxProfit, numTrades) ;
-            return Math.max(profit1, profit2);
-        } else if (prices[index] > currentHold && canSell){
-            // we can sell and record profit or not do anything
-            int ProfitSofar = maxProfit + prices[index] - currentHold;
-            int profit1 = tradeOrNot(0, false,index+1, prices, ProfitSofar, numTrades+1) ;
-            // do nothing
-            int profit2 = tradeOrNot(currentHold, true,index+1, prices, maxProfit, numTrades) ;
-            return Math.max(profit1, profit2);
+
+            // if (dp[index+1][numTrades][0] < 0 ) {
+            int buy =  -prices[index] + tradeOrNot(prices[index], 0,index+1, prices, maxProfit, numTrades,dp);
+            // }
+            // if (dp[index+1][numTrades][1] < 0 ) {
+            int notbuy = tradeOrNot(currentHold, 1,index+1, prices, maxProfit, numTrades,dp);
+            // }
+
+
+            return dp[index][numTrades][1] = Math.max(buy, notbuy);
+
         } else {
-            // do nothing
-            return tradeOrNot(currentHold, canSell, index+1, prices, maxProfit, numTrades) ;
+            // canSell =0
+            // we can sell and record profit or not do anything
+            // int profitSofar = maxProfit + prices[index] - currentHold;
+            int profitSofar = prices[index] - currentHold;
+            // if (dp[index+1][numTrades+1][1] < 0) {
+
+            int sell = prices[index] + tradeOrNot(0, 1,index+1, prices, profitSofar, numTrades+1,dp);
+            // }
+            // if (dp[index+1][numTrades][0] < 0) {
+            int notsell = tradeOrNot(currentHold, 0 ,index+1, prices, maxProfit, numTrades,dp) ;
+            // }
+            return dp[index][numTrades][0] = Math.max(sell, notsell);
+
         }
 
 
