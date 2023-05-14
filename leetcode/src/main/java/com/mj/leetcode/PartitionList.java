@@ -24,7 +24,7 @@ public class PartitionList {
 
             while (bCurr != null && curr != null && bCurr != curr) {
 
-                if (bCurr.val > curr.val) {
+                if (bCurr.val >= x && bCurr.val > curr.val) {
                     // curr in less than bcurr
                     ListNode tmp = curr.next;
                     if (bPrev != null) {
@@ -37,6 +37,7 @@ public class PartitionList {
 
                     prev.next = tmp;
                     curr = tmp;
+                    break ;
 
                 }
 
