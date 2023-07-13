@@ -1,0 +1,69 @@
+package com.mj.leetcode;
+
+public class ConstrainedSubsetSumOld {
+    public int constrainedSubsetSum(int[] nums, int k) {
+
+        boolean allNegative = true ;
+        int largestNegative = Integer.MIN_VALUE;
+
+        int back = 0 ;
+        int maxSum = 0;
+        int currMaxSum = 0;
+
+        while (back < nums.length) {
+
+            if (nums[back] > 0) {
+                currMaxSum = currMaxSum + nums[back];
+                allNegative = false;
+                back++;
+            } else {
+                // val less than zero
+                int j = back == 0 ? 0 : 1;
+                int localMax = Integer.MIN_VALUE;
+                int localMaxIndex = -1 ;
+                int front = back;
+                while (nums[front] < 0 && j <= k) {
+                    if (nums[front] > localMax) {
+                        localMax = nums[front];
+                        localMaxIndex = front;
+                        largestNegative = Math.max(largestNegative, localMax);
+                    }
+
+                    front++;
+                    j++;
+
+                    if (front == nums.length) {
+                        break;
+                    }
+                }
+
+                if (j < k && front == nums.length) {
+                    back = nums.length - 1;
+                } else if (j < k && nums[front] > 0) {
+                    back = front;
+                    currMaxSum = currMaxSum + nums[back];
+                    allNegative = false;
+                } else if (j > k && front < nums.length) {
+
+                    if (currMaxSum + localMax > 0) {
+                        currMaxSum = currMaxSum + localMax;
+                        back = localMaxIndex;
+                    } else {
+                        maxSum = Math.max(maxSum, currMaxSum);
+                        currMaxSum = 0;
+                    }
+                }
+
+                back++;
+            }
+
+        }
+
+        maxSum = Math.max(maxSum, currMaxSum);
+
+        if (allNegative) {
+            return largestNegative ;
+        } else
+            return maxSum;
+    }
+}
